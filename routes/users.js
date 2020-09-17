@@ -12,7 +12,7 @@ router.get('/users/:id', (req, res) => {
   });
   if (!isUserId) {
     res.status(404);
-    res.send({ "message": "Нет пользователя с таким id" });
+    res.send({ message: 'Нет пользователя с таким id' });
     return;
   }
   res.send(user);
