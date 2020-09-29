@@ -1,31 +1,30 @@
-const fs = require('fs').promises;
-const path = require('path');
 const User = require('../models/user');
 
-const usersPath = path.join(__dirname, '..', 'data', 'users.json');
-
 module.exports.getUsers = (req, res) => {
-  fs.readFile(usersPath)
-    .then((data) => {
-      const users = JSON.parse(data);
-      res.status(200).json(users);
+  User.find({})
+    .then((users) => {
+      res.status(200).send(users);
     })
     .catch(() => {
       res.status(500).send({ messege: 'Ошибка чтения файла.' });
     });
 };
-module.exports.getUsersId = (req, res) => {
-  fs.readFile(usersPath)
-    .then((data) => {
-      const users = JSON.parse(data);
-      const user = users.find((item) => item._id === req.params.id);
-      if (user) {
-        res.send(user);
-      } else {
-        res.send({ message: 'Нет пользователя с таким id' });
-      }
+module.exports.getUserId = (req, res) => {
+  User.findOne({ _id: req.params.id })
+    .then((user) => {
+      res.send(user);
     })
     .catch(() => {
-      res.status(500).send({ messege: 'Ошибка чтения файла.' });
+      res.status(404).send({ messege: 'Нет пользователя с таким id.' });
+    });
+};
+module.exports.createUser = (req, res) => {
+  const { name, about, avatar } = req.body;
+  User.create({ name, about, avatar })
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(400).send(err.message);
     });
 };
