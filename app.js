@@ -15,9 +15,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
   });
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/', users);
 app.use((req, res, next) => {
   req.user = {
     _id: '5f732ad50e50b63b547c646d',
@@ -25,6 +25,7 @@ app.use((req, res, next) => {
 
   next();
 });
+app.use('/', users);
 app.use('/', cards);
 app.all('*', (req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
